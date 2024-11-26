@@ -1,5 +1,5 @@
-import PageObject.MainPage;
-import PageObject.OrderPage;
+import ru.page.object.MainPage;
+import ru.page.object.OrderPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.After;
 import org.junit.Before;
@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.openqa.selenium.chrome.ChromeDriver;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class OrderPlacementButtonBottomTest {
@@ -33,8 +32,10 @@ public class OrderPlacementButtonBottomTest {
     private String phone;
     private String deliveryDate;
     private WebDriverWait wait;
+    private String browser;
 
-    public OrderPlacementButtonBottomTest(String name, String lastname, String address, String metroStation, String phone, String deliveryDate) {
+    public OrderPlacementButtonBottomTest(String browser, String name, String lastname, String address, String metroStation, String phone, String deliveryDate) {
+        this.browser = browser;
         this.name = name;
         this.lastname = lastname;
         this.address = address;
@@ -46,8 +47,13 @@ public class OrderPlacementButtonBottomTest {
     @Before
     public void setup() {
 
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        if (browser.equals("chrome")) {
+            WebDriverManager.chromedriver().setup();
+            driver = new ChromeDriver();
+        } else if (browser.equals("firefox")) {
+            WebDriverManager.firefoxdriver().setup();
+            driver = new FirefoxDriver();
+        }
         wait = new WebDriverWait(driver, 10);
         driver.get("https://qa-scooter.praktikum-services.ru/");
         mainPage = new MainPage(driver);
@@ -55,7 +61,7 @@ public class OrderPlacementButtonBottomTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDownTest() {
         if (driver != null) {
             driver.quit();
         }
@@ -64,46 +70,13 @@ public class OrderPlacementButtonBottomTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"Ольга", "Иванова", "Пушкина 2", "Сокольников", "89797234557", "28.11.2024"},
-                {"Наталья", "Смирнова", "Московская 4", "Лубянка", "89796486947", "29.11.2024"},
+                {"firefox", "Ольга", "Иванова", "Пушкина 2", "Сокольников", "89797234557", "28.11.2024"},
+                {"firefox", "Наталья", "Смирнова", "Московская 4", "Лубянка", "89796486947", "29.11.2024"},
         });
     }
 
     @Test
-    public void testOrderFlowWithFirstSetOfData() {
-        try {
-            WebElement orderButtonBottom = driver.findElement(By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM']"));
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", orderButtonBottom);
-            wait.until(ExpectedConditions.elementToBeClickable(orderButtonBottom));
-
-            mainPage.clickOrderButtonBottom();
-            orderPage.fillFirstOrderForm(name, lastname, address, metroStation, phone);
-            orderPage.fillSecondOrderForm(deliveryDate);
-            orderPage.orderConfirmationButton();
-
-            WebElement successMessageElement = driver.findElement(By.xpath("//div[@class='Order_Modal__YZ-d3']"));
-            assertTrue("Всплывающее окно не отображается!", successMessageElement.isDisplayed());
-        } catch (Exception e) {
-            System.out.println("Заказ не был выполнен в Chrome. Проверяем в Firefox.");
-            resetToFirefox();
-        }
-    }
-
-    private void resetToFirefox() {
-
-        if (driver != null) {
-            driver.quit();
-        }
-
-
-        WebDriverManager.firefoxdriver().setup();
-        driver = new FirefoxDriver();
-        wait = new WebDriverWait(driver, 10);
-
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-        mainPage = new MainPage(driver);
-        orderPage = new OrderPage(driver);
-
+    public void orderFlowWithFirstSetOfDataTest() {
 
         WebElement orderButtonBottom = driver.findElement(By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM']"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", orderButtonBottom);
@@ -114,8 +87,7 @@ public class OrderPlacementButtonBottomTest {
         orderPage.fillSecondOrderForm(deliveryDate);
         orderPage.orderConfirmationButton();
 
-        WebElement successMessageElement = driver.findElement(By.xpath("//div[@class='Order_Modal__YZ-d3']"));
-        assertTrue("Всплывающее окно не отображается в Firefox!", successMessageElement.isDisplayed());
+        orderPage.successMessage();
 
     }
 }

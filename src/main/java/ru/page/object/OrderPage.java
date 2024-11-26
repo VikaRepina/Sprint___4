@@ -1,12 +1,11 @@
-package PageObject;
+package ru.page.object;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import static org.junit.Assert.assertTrue;
 
-import java.time.Instant;
 
 public class OrderPage extends BasePage {
     // Поле ввода Имени
@@ -20,7 +19,7 @@ public class OrderPage extends BasePage {
     // Поле ввода Телефона
     private final By phoneInput = By.xpath("//input[@class='Input_Input__1iN_Z Input_Responsible__1jDKN' and @placeholder='* Телефон: на него позвонит курьер']");
     // Кнопка перехода в следующее окно
-    private final By nextButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM']");
+    private final By nextButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()= 'Далее']");
     // Поле выбора даты доставки
     private final By deliveryDateInput = By.xpath("//input[@placeholder='* Когда привезти самокат']");
     // Поле выбора срока аренды
@@ -45,7 +44,9 @@ public class OrderPage extends BasePage {
         driver.findElement(metroStationInput).sendKeys(metroStation, Keys.ARROW_DOWN, Keys.ENTER);
         driver.findElement(phoneInput).sendKeys(phone);
         driver.findElement(nextButton).click();
+
     }
+
 
     public void fillSecondOrderForm (String deliveryDate) {
         driver.findElement(deliveryDateInput).sendKeys(deliveryDate, Keys.ENTER);
@@ -57,4 +58,10 @@ public class OrderPage extends BasePage {
     public void orderConfirmationButton () {
         driver.findElement(orderConfirmationButton).click();
     }
+
+    public void successMessage () {
+        WebElement successMessageElement = driver.findElement(successMessage);
+        assertTrue("Всплывающее окно не отображается!", successMessageElement.isDisplayed());
+    }
+
 }
