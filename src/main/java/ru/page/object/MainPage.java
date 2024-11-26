@@ -22,7 +22,6 @@ public class MainPage extends BasePage {
     private final By dropdownAnswer = By.xpath("//div[@id='accordion__panel-%s']");
 
 
-
     public MainPage(WebDriver driver) {
         super(driver);
     }

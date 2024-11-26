@@ -1,3 +1,5 @@
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.page.object.MainPage;
 import ru.page.object.OrderPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -72,7 +74,7 @@ public class OrderPlacementButtonTopTest {
         return Arrays.asList(new Object[][]{
                 {"firefox", "Иван", "Иванов", "Пушкина 1", "Сокольников", "89991234567", "30.11.2024"},
                 {"firefox", "Петр", "Петров", "Разина 2", "Лубянка", "89791484920", "29.11.2024"},
-                {"firefox", "Евгений", "Маслов", "Разина 4", "Лубянка", "89496584974", "30.11.2024"}
+                {"chrome", "Евгений", "Маслов", "Разина 4", "Лубянка", "89496584974", "30.11.2024"}
 
         });
     }
@@ -83,10 +85,12 @@ public class OrderPlacementButtonTopTest {
         mainPage.clickOrderButtonTop();
 
         orderPage.fillFirstOrderForm(name, lastname, address, metroStation, phone);
+        orderPage.nextButton(wait);
         orderPage.fillSecondOrderForm(deliveryDate);
         orderPage.orderConfirmationButton();
 
         orderPage.successMessage();
+
 
     }
 }

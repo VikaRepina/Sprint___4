@@ -72,6 +72,7 @@ public class OrderPlacementButtonBottomTest {
         return Arrays.asList(new Object[][]{
                 {"firefox", "Ольга", "Иванова", "Пушкина 2", "Сокольников", "89797234557", "28.11.2024"},
                 {"firefox", "Наталья", "Смирнова", "Московская 4", "Лубянка", "89796486947", "29.11.2024"},
+                {"chrome", "Ирина", "Воробьева", "Московская 5", "Лубянка", "89796486947", "29.11.2024"},
         });
     }
 
@@ -84,6 +85,7 @@ public class OrderPlacementButtonBottomTest {
 
         mainPage.clickOrderButtonBottom();
         orderPage.fillFirstOrderForm(name, lastname, address, metroStation, phone);
+        orderPage.nextButton(wait);
         orderPage.fillSecondOrderForm(deliveryDate);
         orderPage.orderConfirmationButton();
 

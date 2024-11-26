@@ -1,9 +1,11 @@
 package ru.page.object;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Instant;
+
 import static org.junit.Assert.assertTrue;
 
 
@@ -18,6 +20,8 @@ public class OrderPage extends BasePage {
     private final By metroStationInput = By.xpath("//input[@class='select-search__input']");
     // Поле ввода Телефона
     private final By phoneInput = By.xpath("//input[@class='Input_Input__1iN_Z Input_Responsible__1jDKN' and @placeholder='* Телефон: на него позвонит курьер']");
+    // Кнопка согласия на использование куки
+    private final By cookieButton = By.xpath("//button[@id='rcc-confirm-button']");
     // Кнопка перехода в следующее окно
     private final By nextButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()= 'Далее']");
     // Поле выбора даты доставки
@@ -31,7 +35,7 @@ public class OrderPage extends BasePage {
     // Кнопка подтверждения оформления заказа
     private final By orderConfirmationButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()= 'Да']");
     // Сообщение об успешном создании заказа
-    private final By successMessage = By.xpath("//div[@class='Order_Modal__YZ-d3']");
+    private final By successMessage = By.xpath("//div[@class='Order_ModalHeader__3FDaJ' and text()= 'Заказ оформлен']");
 
     public OrderPage(WebDriver driver) {
         super(driver);
@@ -43,7 +47,16 @@ public class OrderPage extends BasePage {
         driver.findElement(addressInput).sendKeys(address);
         driver.findElement(metroStationInput).sendKeys(metroStation, Keys.ARROW_DOWN, Keys.ENTER);
         driver.findElement(phoneInput).sendKeys(phone);
-        driver.findElement(nextButton).click();
+
+
+    }
+
+    public void nextButton (WebDriverWait wait) {
+        WebElement cookieButtonLocator = wait.until(ExpectedConditions.elementToBeClickable(cookieButton));
+        cookieButtonLocator.click();
+
+        WebElement nextButtonLocator = wait.until(ExpectedConditions.elementToBeClickable(nextButton));
+        nextButtonLocator.click();
 
     }
 
@@ -53,7 +66,9 @@ public class OrderPage extends BasePage {
         driver.findElement(rentalPeriodOption).click();
         driver.findElement(rentalPeriodSelect).click();
         driver.findElement(orderButton).click();
+
     }
+
 
     public void orderConfirmationButton () {
         driver.findElement(orderConfirmationButton).click();
